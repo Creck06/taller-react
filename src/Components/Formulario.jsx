@@ -6,13 +6,13 @@ import { firebase } from './firebase'
 const Formulario = () => {
   const [nombre, setNombre] = React.useState("");
   const [cedula, setCedula] = React.useState("");
-  const [edad, setEdad] = React.useState("");
-  const [email, setEmail] = React.useState("");
+  const [fecha, setFecha] = React.useState("");
   const [telefono, setTelefono] = React.useState("");
-  const [tiempo, setTiempo] = React.useState("");
+  const [correo, setCorreo] = React.useState("");
+  const [horario, setHorario] = React.useState("");
   const [salario, setSalario] = React.useState("");
   const [id, setId] = React.useState("")
-  const [listaEmpleados, setListaEmpleados] = React.useState([])
+  const [listaLocutores, setListaLocutores] = React.useState([])
   const [modoEdicion, setModoEdicion] = React.useState(false)
   const [error, setError] = React.useState(null)
 
@@ -20,12 +20,12 @@ const Formulario = () => {
     const obtenerDatos = async () => {
       try {
         const db = firebase.firestore()
-        const data = await db.collection('empleados').get()
+        const data = await db.collection('locutores').get()
         const arrayData = data.docs.map(doc => (
           { id: doc.id, ...doc.data() }
         ))
         //console.log(arrayData)
-        setListaEmpleados(arrayData)
+        setListaLocutores(arrayData)
       } catch (error) {
 
       }
@@ -44,20 +44,20 @@ const Formulario = () => {
       setError('Digite la cedula')
       return
     }
-    if (!edad.trim()) {
-      setError('Digite la edad')
-      return
-    }
-    if (!email.trim()) {
-      setError('Digite el email')
+    if (!fecha.trim()) {
+      setError('Digite la fecha de nacimiento')
       return
     }
     if (!telefono.trim()) {
       setError('Digite el telefono')
       return
     }
-    if (!tiempo.trim()) {
-      setError('Digite el tiempo')
+    if (!correo.trim()) {
+      setError('Digite el correo')
+      return
+    }
+    if (!horario.trim()) {
+      setError('Digite el horario')
       return
     }
     if (!salario.trim()) {
@@ -75,22 +75,22 @@ const Formulario = () => {
       })
       const db = firebase.firestore()
       const nuevoEmpleado = {
-        aNombre: nombre, aCedula: cedula, aEdad: edad, aEmail: email, aTelefono: telefono, aTiempo: tiempo, aSalario: salario
+        atribNombre: nombre, atribCedula: cedula, atribFecha: fecha, atribTelefono: telefono, atribCorreo: correo, atribHorario: horario, atribSalario: salario
       }
-      await db.collection('empleados').add(nuevoEmpleado)
+      await db.collection('locutores').add(nuevoEmpleado)
 
-      setListaEmpleados([
-        ...listaEmpleados,
-        { id: nanoid(), aNombre: nombre, aCedula: cedula, aEdad: edad, aEmail: email, aTelefono: telefono, aTiempo: tiempo, aSalario: salario }
+      setListaLocutores([
+        ...listaLocutores,
+        { id: nanoid(), atribNombre: nombre, atribCedula: cedula, atribFecha: fecha, atribTelefono: telefono, atribCorreo: correo, atribHorario: horario, atribSalario: salario }
       ])
 
       e.target.reset()
       setNombre('')
       setCedula('')
-      setEdad('')
-      setEmail('')
+      setFecha('')
       setTelefono('')
-      setTiempo('')
+      setCorreo('')
+      setHorario('')
       setSalario('')
       setError(null)
 
@@ -101,13 +101,13 @@ const Formulario = () => {
 
   const editar = item => {
     setId(item.id)
-    setNombre(item.aNombre)
-    setCedula(item.aCedula)
-    setEdad(item.aEdad)
-    setEmail(item.aEmail)
-    setTelefono(item.aTelefono)
-    setTiempo(item.aTiempo)
-    setSalario(item.aSalario)
+    setNombre(item.atribNombre)
+    setCedula(item.atribCedula)
+    setFecha(item.atribEdad)
+    setTelefono(item.atribEmail)
+    setCorreo(item.atribTelefono)
+    setHorario(item.atribTiempo)
+    setSalario(item.atribSalario)
     setModoEdicion(true)
     setError(null)
   }
@@ -123,20 +123,20 @@ const Formulario = () => {
       setError('Digite la cedula')
       return
     }
-    if (!edad.trim()) {
-      setError('Digite la edad')
-      return
-    }
-    if (!email.trim()) {
-      setError('Digite el email')
+    if (!fecha.trim()) {
+      setError('Digite la fecha de nacimiento')
       return
     }
     if (!telefono.trim()) {
       setError('Digite el telefono')
       return
     }
-    if (!tiempo.trim()) {
-      setError('Digite el tiempo')
+    if (!correo.trim()) {
+      setError('Digite el correo')
+      return
+    }
+    if (!horario.trim()) {
+      setError('Digite el horario')
       return
     }
     if (!salario.trim()) {
@@ -146,20 +146,20 @@ const Formulario = () => {
 
     try {
       const db = firebase.firestore()
-      await db.collection('empleados').doc(id).update({
-        aNombre: nombre, aCedula: cedula, aEdad: edad, aEmail: email, aTelefono: telefono, aTiempo: tiempo, aSalario: salario
+      await db.collection('locutores').doc(id).update({
+        atribNombre: nombre, atribCedula: cedula, atribFecha: fecha, atribTelefono: telefono, atribCorreo: correo, atribHorario: horario, atribSalario: salario
       })
-      const arrayEditado = listaEmpleados.map(
-        item => item.id === id ? { id: id, aNombre: nombre, aCedula: cedula, aEdad: edad, aEmail: email, aTelefono: telefono, aTiempo: tiempo, aSalario: salario } : item
+      const arrayEditado = listaLocutores.map(
+        item => item.id === id ? { id: id, atribNombre: nombre, atribCedula: cedula, atribFecha: fecha, atribTelefono: telefono, atribCorreo: correo, atribHorario: horario, atribSalario: salario } : item
       )
-      setListaEmpleados(arrayEditado)
+      setListaLocutores(arrayEditado)
       setId('')
       setNombre('')
       setCedula('')
-      setEdad('')
-      setEmail('')
+      setFecha('')
       setTelefono('')
-      setTiempo('')
+      setCorreo('')
+      setHorario('')
       setSalario('')
       setModoEdicion(false)
     } catch (error) {
@@ -177,9 +177,9 @@ const Formulario = () => {
       if (result) {
         try {
           const db = firebase.firestore()
-          await db.collection('empleados').doc(id).delete()
-          const aux = listaEmpleados.filter(item => item.id !== id)
-          setListaEmpleados(aux)
+          await db.collection('locutores').doc(id).delete()
+          const aux = listaLocutores.filter(item => item.id !== id)
+          setListaLocutores(aux)
         } catch (error) {
           console.log(error)
         }
@@ -199,17 +199,17 @@ const Formulario = () => {
     setId('')
     setNombre('')
     setCedula('')
-    setEdad('')
-    setEmail('')
+    setFecha('')
     setTelefono('')
-    setTiempo('')
+    setCorreo('')
+    setHorario('')
     setSalario('')
     setError(null)
   }
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center">Administrar Empleados</h1>
+      <h1 className="text-center">Locutores - Olímpica Estereo</h1>
       <hr />
       <form onSubmit={modoEdicion ? editarEmpleado : guardarEmpleado} className="text-center">
         {
@@ -223,21 +223,21 @@ const Formulario = () => {
           onChange={(e) => setCedula(e.target.value)}
           value={cedula}
         />
-        <input className="form-control mb-2" type="text" placeholder="Ingrese Edad"
-          onChange={(e) => setEdad(e.target.value)}
-          value={edad}
+        <input className="form-control mb-2" type="text" placeholder="Ingrese Fecha de Nacimiento"
+          onChange={(e) => setFecha(e.target.value)}
+          value={fecha}
         />
-        <input className="form-control mb-2" type="text" placeholder="Ingrese Email"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-        />
-        <input className="form-control mb-2" type="text" placeholder="Ingrese Telefono"
+        <input className="form-control mb-2" type="text" placeholder="Ingrese Teléfono"
           onChange={(e) => setTelefono(e.target.value)}
           value={telefono}
         />
-        <input className="form-control mb-2" type="text" placeholder="Ingrese Tiempo (meses)"
-          onChange={(e) => setTiempo(e.target.value)}
-          value={tiempo}
+        <input className="form-control mb-2" type="text" placeholder="Ingrese Correo"
+          onChange={(e) => setCorreo(e.target.value)}
+          value={correo}
+        />
+        <input className="form-control mb-2" type="text" placeholder="Ingrese Horario"
+          onChange={(e) => setHorario(e.target.value)}
+          value={horario}
         />
         <input className="form-control mb-2" type="text" placeholder="Ingrese Salario"
           onChange={(e) => setSalario(e.target.value)}
@@ -259,12 +259,12 @@ const Formulario = () => {
 
       <div className="row mt-5">
         <div className="col-12">
-          <h4 className="text-center">Listado de Empleados</h4>
+          <h4 className="text-center">Listado de Locutores</h4>
           <ul className="list-group">
             {
-              listaEmpleados.map(item => (
+              listaLocutores.map(item => (
                 <li className="list-group-item" key={item.id}>
-                  <span className="lead">{item.aNombre} - {item.aCedula} - {item.aEdad} - {item.aEmail} - {item.aTelefono} - {item.aTiempo} - {item.aSalario}</span>
+                  <span className="lead">{item.atribNombre} - {item.atribCedula} - {item.atribFecha} - {item.atribTelefono} - {item.atribCorreo} - {item.atribHorario} - {item.atribSalario}</span>
                   <button className="btn btn-danger btn-sm float-end mx-2" onClick={() => eliminar(item.id)}>Eliminar</button>
                   <button className="btn btn-warning btn-sm float-end mx-2" onClick={() => editar(item)}>Editar</button>
                 </li>
